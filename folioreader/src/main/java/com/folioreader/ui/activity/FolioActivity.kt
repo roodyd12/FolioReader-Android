@@ -261,6 +261,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         setConfig(savedInstanceState)
         initDistractionFreeMode(savedInstanceState)
+        hideSystemUI()
 
         setContentView(R.layout.folio_activity)
         this.savedInstanceState = savedInstanceState
@@ -308,7 +309,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         val drawable = ContextCompat.getDrawable(this, R.drawable.ic_drawer)
         UiUtil.setColorIntToDrawable(config.themeColor, drawable!!)
-        toolbar!!.navigationIcon = drawable
+        toolbar!!.navigationIcon = null
 
         if (config.isNightMode) {
             setNightMode()
@@ -507,7 +508,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         val publication = pubBox!!.publication
         spine = publication.readingOrder
-        title = publication.metadata.title
+        title = ""
 
         if (mBookId == null) {
             if (!publication.metadata.identifier.isEmpty()) {
