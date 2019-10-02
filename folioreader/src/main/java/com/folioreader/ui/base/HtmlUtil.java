@@ -23,6 +23,44 @@ public final class HtmlUtil {
         String cssPath =
                 String.format(context.getString(R.string.css_tag), "file:///android_asset/css/Style.css");
 
+        String fontFamily = null;
+        String fontStyle = null;
+
+        switch (config.getFont()) {
+            case Constants.FONT_ANDADA:
+                fontFamily = "andada";
+                fontStyle = "sans-serif";
+                break;
+            case Constants.FONT_LATO:
+                fontFamily = "lato";
+                fontStyle = "serif";
+                break;
+            case Constants.FONT_LORA:
+                fontFamily = "lora";
+                fontStyle = "serif";
+                break;
+            case Constants.FONT_RALEWAY:
+                fontFamily = "raleway";
+                fontStyle = "sans-serif";
+                break;
+            default:
+                // default or internal epub fonts will be used
+                break;
+        }
+
+        if (fontFamily != null) {
+            String[] textElements = {"p", "span", "h1", "h2", "h3", "h4", "h5", "h6"};
+            String fontFamilyStyle = "{font-family:\"{font family}\", {font style} !important;}"
+                    .replace("{font family}", fontFamily)
+                    .replace("{font style}", fontStyle);
+
+            cssPath = cssPath + "\n<style>\n";
+            for (String e : textElements) {
+                cssPath = cssPath + "    " + e + " " + fontFamilyStyle + "\n";
+            }
+            cssPath = cssPath + "</style>";
+        }
+
         String jsPath = String.format(context.getString(R.string.script_tag),
                 "file:///android_asset/js/jsface.min.js") + "\n";
 
