@@ -261,6 +261,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         setConfig(savedInstanceState)
         initDistractionFreeMode(savedInstanceState)
+        hideSystemUI()
 
         setContentView(R.layout.folio_activity)
         this.savedInstanceState = savedInstanceState
