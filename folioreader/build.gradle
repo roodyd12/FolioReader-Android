@@ -6,16 +6,16 @@ apply plugin: 'kotlin-android-extensions'
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'folioreader'
+    bintrayName = 'roodyd12'
 
-    publishedGroupId = 'com.folioreader'
-    libraryName = 'FolioReader'
-    artifact = 'folioreader'
+    publishedGroupId = 'com.github.roodyd12'
+    libraryName = 'FolioReader-Android'
+    artifact = 'FolioReader-Android'
 
     libraryDescription = 'An epub reader for Android'
 
-    siteUrl = 'https://github.com/FolioReader/FolioReader-Android'
-    gitUrl = 'https://github.com/FolioReader/FolioReader-Android.git'
+    siteUrl = 'https://github.com/roodyd12/FolioReader-Android/'
+    gitUrl = 'https://github.com/roodyd12/FolioReader-Android/.git'
 
     libraryVersion = versions.folioreaderSdk
 
