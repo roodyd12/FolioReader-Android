@@ -25,7 +25,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.folioreader.Config
 import com.folioreader.FolioReader
 import com.folioreader.R
-import com.folioreader.mediaoverlay.MediaController
 import com.folioreader.mediaoverlay.MediaControllerCallbacks
 import com.folioreader.model.HighLight
 import com.folioreader.model.HighlightImpl
@@ -114,7 +113,7 @@ class FolioPageFragment : Fragment(),
 
     private var highlightStyle: String? = null
 
-    private var mediaController: MediaController? = null
+    //    private var mediaController: MediaController? = null
     private var mConfig: Config? = null
     private var mBookId: String? = null
     var searchLocatorVisible: SearchLocator? = null
@@ -157,8 +156,8 @@ class FolioPageFragment : Fragment(),
             //    mediaController = new MediaController(getActivity(), MediaController.MediaType.SMIL, this);
             //    hasMediaOverlay = true;
             //} else {
-            mediaController = MediaController(activity, MediaController.MediaType.TTS, this)
-            mediaController!!.setTextToSpeech(activity)
+//            mediaController = MediaController(activity, MediaController.MediaType.TTS, this)
+//            mediaController!!.setTextToSpeech(activity)
             //}
         }
         highlightStyle = HighlightImpl.HighlightStyle.classForStyle(HighlightImpl.HighlightStyle.Normal)
@@ -187,7 +186,7 @@ class FolioPageFragment : Fragment(),
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun pauseButtonClicked(event: MediaOverlayPlayPauseEvent) {
         if (isAdded && spineItem!!.href == event.href) {
-            mediaController!!.stateChanged(event)
+//            mediaController!!.stateChanged(event)
         }
     }
 
@@ -201,8 +200,8 @@ class FolioPageFragment : Fragment(),
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun speedChanged(event: MediaOverlaySpeedEvent) {
-        if (mediaController != null)
-            mediaController!!.setSpeed(event.speed)
+//        if (mediaController != null)
+//            mediaController!!.setSpeed(event.speed)
     }
 
     /**
@@ -563,7 +562,7 @@ class FolioPageFragment : Fragment(),
                 // to handle TTS playback when highlight is deleted.
                 val p = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}")
                 if (!p.matcher(message).matches() && message != "undefined" && isCurrentFragment) {
-                    mediaController!!.speakAudio(message)
+//                    mediaController!!.speakAudio(message)
                 }
             }
 
@@ -576,7 +575,7 @@ class FolioPageFragment : Fragment(),
         super.onStop()
         Log.v(LOG_TAG, "-> onStop -> " + spineItem.href + " -> " + isCurrentFragment)
 
-        mediaController!!.stop()
+//        mediaController!!.stop()
         //TODO save last media overlay item
 
         if (isCurrentFragment)
