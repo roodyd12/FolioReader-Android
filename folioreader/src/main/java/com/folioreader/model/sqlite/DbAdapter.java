@@ -81,6 +81,7 @@ public class DbAdapter {
     }
 
     public static Cursor getHighlightsForPageId(String query, String pageId) {
+        if (mDatabase == null) return null;
         return mDatabase.rawQuery(query, null);
     }
 
