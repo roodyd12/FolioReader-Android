@@ -23,10 +23,6 @@
             android:theme="@style/FolioActivityDayTheme" />
 
         <activity
-            android:name="com.folioreader.ui.activity.ContentHighlightActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
             android:name="com.folioreader.ui.activity.SearchActivity"
             android:launchMode="singleTop">
             <intent-filter>

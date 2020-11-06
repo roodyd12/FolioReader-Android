@@ -58,7 +58,6 @@
         tools:text="...republishers to fill in for you as you focus on print and quick-and-dirty ebooks, but a content imperative vital to your survival in the digital future, as I’ll take the odd detour from the planned route to point out..." />
 
     <View
-        android:id="@+id/viewLineBottom"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="?dividerColor"

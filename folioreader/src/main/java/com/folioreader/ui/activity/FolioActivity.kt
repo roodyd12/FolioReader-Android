@@ -15,14 +15,12 @@
  */
 package com.folioreader.ui.activity
 
-import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -36,12 +34,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.folioreader.Config
@@ -50,22 +46,17 @@ import com.folioreader.Constants.*
 import com.folioreader.FolioReader
 import com.folioreader.R
 import com.folioreader.model.DisplayUnit
-import com.folioreader.model.HighlightImpl
-import com.folioreader.model.event.MediaOverlayPlayPauseEvent
 import com.folioreader.model.locators.ReadLocator
 import com.folioreader.model.locators.SearchLocator
 import com.folioreader.ui.adapter.FolioPageFragmentAdapter
 import com.folioreader.ui.adapter.SearchAdapter
 import com.folioreader.ui.fragment.FolioPageFragment
-import com.folioreader.ui.fragment.MediaControllerFragment
 import com.folioreader.ui.view.ConfigBottomSheetDialogFragment
 import com.folioreader.ui.view.DirectionalViewpager
 import com.folioreader.ui.view.FolioAppBarLayout
-import com.folioreader.ui.view.MediaControllerCallback
 import com.folioreader.util.AppUtil
 import com.folioreader.util.FileUtil
 import com.folioreader.util.UiUtil
-import org.greenrobot.eventbus.EventBus
 import org.readium.r2.shared.Link
 import org.readium.r2.shared.Publication
 import org.readium.r2.streamer.parser.CbzParser
@@ -74,7 +65,7 @@ import org.readium.r2.streamer.parser.PubBox
 import org.readium.r2.streamer.server.Server
 import java.lang.ref.WeakReference
 
-class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControllerCallback,
+class FolioActivity : AppCompatActivity(), FolioActivityCallback,
     View.OnSystemUiVisibilityChangeListener {
 
     private var bookFileName: String? = null
@@ -101,7 +92,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
     private var mEpubFilePath: String? = null
     private var mEpubSourceType: EpubSourceType? = null
     private var mEpubRawId = 0
-    private var mediaControllerFragment: MediaControllerFragment? = null
     private var direction: Config.Direction = Config.Direction.VERTICAL
     private var portNumber: Int = Constants.DEFAULT_PORT_NUMBER
     private var streamerUri: Uri? = null
@@ -281,7 +271,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         }
 
         initActionBar()
-        initMediaController()
         setupBook()
     }
 
@@ -294,9 +283,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         val config = AppUtil.getSavedConfig(applicationContext)!!
 
-        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_drawer)
-        UiUtil.setColorIntToDrawable(config.themeColor, drawable!!)
-        toolbar!!.navigationIcon = drawable
+//        toolbar!!.navigationIcon = drawable
 
         if (config.isNightMode) {
             setNightMode()
@@ -340,22 +327,12 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.night_title_text_color))
     }
 
-    private fun initMediaController() {
-        Log.v(LOG_TAG, "-> initMediaController")
-
-        mediaControllerFragment = MediaControllerFragment.getInstance(supportFragmentManager, this)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val config = AppUtil.getSavedConfig(applicationContext)!!
         UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemSearch).icon)
         UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemConfig).icon)
-        UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemTts).icon)
-
-        if (!config.isShowTts)
-            menu.findItem(R.id.itemTts).isVisible = false
 
         return true
     }
@@ -365,12 +342,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
 
         val itemId = item.itemId
 
-        if (itemId == android.R.id.home) {
-            Log.v(LOG_TAG, "-> onOptionsItemSelected -> drawer")
-            startContentHighlightActivity()
-            return true
-
-        } else if (itemId == R.id.itemSearch) {
+        if (itemId == R.id.itemSearch) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
             if (searchUri == null)
                 return true
@@ -387,35 +359,9 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             showConfigBottomSheetDialogFragment()
             return true
 
-        } else if (itemId == R.id.itemTts) {
-            Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
-            showMediaController()
-            return true
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    fun startContentHighlightActivity() {
-
-        val intent = Intent(this@FolioActivity, ContentHighlightActivity::class.java)
-
-        intent.putExtra(Constants.PUBLICATION, pubBox!!.publication)
-        try {
-            intent.putExtra(CHAPTER_SELECTED, spine!![currentChapterIndex].href)
-        } catch (e: NullPointerException) {
-            Log.w(LOG_TAG, "-> ", e)
-            intent.putExtra(CHAPTER_SELECTED, "")
-        } catch (e: IndexOutOfBoundsException) {
-            Log.w(LOG_TAG, "-> ", e)
-            intent.putExtra(CHAPTER_SELECTED, "")
-        }
-
-        intent.putExtra(FolioReader.EXTRA_BOOK_ID, mBookId)
-        intent.putExtra(Constants.BOOK_TITLE, bookFileName)
-
-        startActivityForResult(intent, RequestCode.CONTENT_HIGHLIGHT.value)
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
     }
 
     fun showConfigBottomSheetDialogFragment() {
@@ -423,10 +369,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             supportFragmentManager,
             ConfigBottomSheetDialogFragment.LOG_TAG
         )
-    }
-
-    fun showMediaController() {
-        mediaControllerFragment!!.show(supportFragmentManager)
     }
 
     private fun setupBook() {
@@ -805,12 +747,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             if (type == CHAPTER_SELECTED) {
                 goToChapter(data.getStringExtra(SELECTED_CHAPTER_POSITION))
 
-            } else if (type == HIGHLIGHT_SELECTED) {
-                val highlightImpl = data.getParcelableExtra<HighlightImpl>(HIGHLIGHT_ITEM)
-                currentChapterIndex = highlightImpl.pageNumber
-                mFolioPageViewPager!!.currentItem = currentChapterIndex
-                val folioPageFragment = currentFragment ?: return
-                folioPageFragment.scrollToHighlightId(highlightImpl.rangy)
             }
         }
     }
@@ -849,12 +785,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             override fun onPageSelected(position: Int) {
                 Log.v(LOG_TAG, "-> onPageSelected -> DirectionalViewpager -> position = $position")
 
-                EventBus.getDefault().post(
-                    MediaOverlayPlayPauseEvent(
-                        spine!![currentChapterIndex].href, false, true
-                    )
-                )
-                mediaControllerFragment!!.setPlayButtonDrawable()
                 currentChapterIndex = position
             }
 
@@ -999,21 +929,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
         direction = config.direction
     }
 
-    override fun play() {
-        EventBus.getDefault().post(
-            MediaOverlayPlayPauseEvent(
-                spine!![currentChapterIndex].href, true, false
-            )
-        )
-    }
-
-    override fun pause() {
-        EventBus.getDefault().post(
-            MediaOverlayPlayPauseEvent(
-                spine!![currentChapterIndex].href, false, false
-            )
-        )
-    }
 
     override fun getDirection(): Config.Direction {
         return direction
