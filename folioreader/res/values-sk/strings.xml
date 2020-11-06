@@ -1,13 +1,6 @@
 <resources>
 
-    <string name="minutes_left">%1$d minút ·&#160;</string>
-    <string name="minute_left">%1$d minúta ·&#160;</string>
-    <string name="less_than_minute">Menej ako minúta ·&#160;</string>
-
     <string name="send_to">Poslať</string>
-
-    <string name="pages_left">%1$d strán zostáva</string>
-    <string name="page_left">%1$d strana zostáva</string>
 
     <string name="direction_horizontal">Horizontálne</string>
     <string name="direction_vertical">Vertikálne</string>

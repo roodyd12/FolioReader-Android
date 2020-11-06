@@ -1,12 +1,5 @@
 <resources>
 
-    <string name="minutes_left">%1$d минуты ·&#160;</string>
-    <string name="minute_left">%1$d минута ·&#160;</string>
-    <string name="less_than_minute">Меньше минуты ·&#160;</string>
-
     <string name="send_to">Отправить</string>
-
-    <string name="pages_left">Осталось %1$d страниц</string>
-    <string name="page_left">Остался %1$d страница</string>
 
 </resources>
