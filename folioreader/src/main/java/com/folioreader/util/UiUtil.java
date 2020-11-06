@@ -26,11 +26,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
+
 import com.folioreader.AppContext;
 import com.folioreader.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,9 +41,6 @@ import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.Hashtable;
 
-/**
- * Created by mahavir on 3/30/16.
- */
 public class UiUtil {
 
     private static final String LOG_TAG = UiUtil.class.getSimpleName();

@@ -1,11 +1,3 @@
-//
-//  Bridge.js
-//  FolioReader-Android
-//
-//  Created by Heberti Almeida on 06/05/15.
-//  Copyright (c) 2015 Folio Reader. All rights reserved.
-//
-
 var thisHighlight;
 var audioMarkClass;
 var wordsPerMinute = 180;

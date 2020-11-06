@@ -2,9 +2,6 @@ package com.folioreader.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Created by Hrishikesh Kadam on 21/04/2018.
- */
 public class ObjectMapperSingleton {
 
     private static volatile ObjectMapper objectMapper;

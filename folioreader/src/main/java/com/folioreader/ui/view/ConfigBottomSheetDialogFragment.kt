@@ -25,9 +25,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.view_config.*
 import org.greenrobot.eventbus.EventBus
 
-/**
- * Created by mobisys2 on 11/16/2016.
- */
 class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     companion object {

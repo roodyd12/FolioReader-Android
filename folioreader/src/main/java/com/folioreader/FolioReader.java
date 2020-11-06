@@ -20,10 +20,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by avez raj on 9/13/2017.
- */
-
 public class FolioReader {
 
     @SuppressLint("StaticFieldLeak")
