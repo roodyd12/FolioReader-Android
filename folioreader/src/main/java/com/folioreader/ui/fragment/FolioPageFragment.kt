@@ -34,10 +34,8 @@ import com.folioreader.ui.base.HtmlTaskCallback
 import com.folioreader.ui.base.HtmlUtil
 import com.folioreader.ui.view.FolioWebView
 import com.folioreader.ui.view.LoadingView
-import com.folioreader.ui.view.VerticalSeekbar
 import com.folioreader.ui.view.WebViewPager
 import com.folioreader.util.AppUtil
-import com.folioreader.util.UiUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -86,23 +84,16 @@ class FolioPageFragment : Fragment(), HtmlTaskCallback {
     private var mRootView: View? = null
 
     private var loadingView: LoadingView? = null
-    private var mScrollSeekbar: VerticalSeekbar? = null
     var mWebview: FolioWebView? = null
     private var webViewPager: WebViewPager? = null
-    private var mPagesLeftTextView: TextView? = null
-    private var mMinutesLeftTextView: TextView? = null
     private var mActivityCallback: FolioActivityCallback? = null
 
     private var mTotalMinutes: Int = 0
-    private var mFadeInAnimation: Animation? = null
-    private var mFadeOutAnimation: Animation? = null
 
     lateinit var spineItem: Link
     private var spineIndex = -1
     private var mBookTitle: String? = null
     private var mIsPageReloaded: Boolean = false
-
-    private var highlightStyle: String? = null
 
     private var mConfig: Config? = null
     private var mBookId: String? = null
@@ -141,16 +132,11 @@ class FolioPageFragment : Fragment(), HtmlTaskCallback {
         searchLocatorVisible = savedInstanceState?.getParcelable(BUNDLE_SEARCH_LOCATOR)
 
         mRootView = inflater.inflate(R.layout.folio_page_fragment, container, false)
-        mPagesLeftTextView = mRootView!!.findViewById<View>(R.id.pagesLeft) as TextView
-        mMinutesLeftTextView = mRootView!!.findViewById<View>(R.id.minutesLeft) as TextView
 
         mConfig = AppUtil.getSavedConfig(context)
 
         loadingView = mRootView!!.findViewById(R.id.loadingView)
-        initSeekbar()
-        initAnimations()
         initWebView()
-        updatePagesLeftTextBg()
 
         return mRootView
     }
@@ -173,7 +159,6 @@ class FolioPageFragment : Fragment(), HtmlTaskCallback {
             loadingView!!.show()
             mIsPageReloaded = true
             setHtml(true)
-            updatePagesLeftTextBg()
         }
     }
 
@@ -258,13 +243,6 @@ class FolioPageFragment : Fragment(), HtmlTaskCallback {
         if (activity is FolioActivityCallback)
             mWebview!!.setFolioActivityCallback((activity as FolioActivityCallback?)!!)
 
-        setupScrollBar()
-        mWebview!!.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-            val height = Math.floor((mWebview!!.contentHeight * mWebview!!.scale).toDouble()).toInt()
-            val webViewHeight = mWebview!!.measuredHeight
-            mScrollSeekbar!!.maximum = height - webViewHeight
-        }
-
         mWebview!!.settings.javaScriptEnabled = true
         mWebview!!.isVerticalScrollBarEnabled = false
         mWebview!!.settings.allowFileAccess = true
@@ -276,14 +254,6 @@ class FolioPageFragment : Fragment(), HtmlTaskCallback {
         mWebview!!.addJavascriptInterface(webViewPager, "WebViewPager")
         mWebview!!.addJavascriptInterface(loadingView, "LoadingView")
         mWebview!!.addJavascriptInterface(mWebview, "FolioWebView")
-
-        mWebview!!.setScrollListener(object : FolioWebView.ScrollListener {
-            override fun onScrollChange(percent: Int) {
-
-                mScrollSeekbar!!.setProgressAndThumb(percent)
-                updatePagesLeftText(percent)
-            }
-        })
 
         mWebview!!.webViewClient = webViewClient
         mWebview!!.webChromeClient = webChromeClient
@@ -510,114 +480,7 @@ class FolioPageFragment : Fragment(), HtmlTaskCallback {
         )
     }
 
-    private fun setupScrollBar() {
-        UiUtil.setColorIntToDrawable(mConfig!!.themeColor, mScrollSeekbar!!.progressDrawable)
-        val thumbDrawable = ContextCompat.getDrawable(activity!!, R.drawable.icons_sroll)
-        UiUtil.setColorIntToDrawable(mConfig!!.themeColor, thumbDrawable!!)
-        mScrollSeekbar!!.thumb = thumbDrawable
-    }
-
-    private fun initSeekbar() {
-        mScrollSeekbar = mRootView!!.findViewById<View>(R.id.scrollSeekbar) as VerticalSeekbar
-        mScrollSeekbar!!.progressDrawable
-            .setColorFilter(
-                resources
-                    .getColor(R.color.default_theme_accent_color),
-                PorterDuff.Mode.SRC_IN
-            )
-    }
-
-    private fun updatePagesLeftTextBg() {
-
-        if (mConfig!!.isNightMode) {
-            mRootView!!.findViewById<View>(R.id.indicatorLayout)
-                .setBackgroundColor(Color.parseColor("#131313"))
-        } else {
-            mRootView!!.findViewById<View>(R.id.indicatorLayout)
-                .setBackgroundColor(Color.WHITE)
-        }
-    }
-
-    private fun updatePagesLeftText(scrollY: Int) {
-        try {
-            val currentPage = (Math.ceil(scrollY.toDouble() / mWebview!!.webViewHeight) + 1).toInt()
-            val totalPages = Math.ceil(mWebview!!.contentHeightVal.toDouble() / mWebview!!.webViewHeight).toInt()
-            val pagesRemaining = totalPages - currentPage
-            val pagesRemainingStrFormat = if (pagesRemaining > 1)
-                getString(R.string.pages_left)
-            else
-                getString(R.string.page_left)
-            val pagesRemainingStr = String.format(
-                Locale.US,
-                pagesRemainingStrFormat, pagesRemaining
-            )
-
-            val minutesRemaining = Math.ceil((pagesRemaining * mTotalMinutes).toDouble() / totalPages).toInt()
-            val minutesRemainingStr: String
-            if (minutesRemaining > 1) {
-                minutesRemainingStr = String.format(
-                    Locale.US, getString(R.string.minutes_left),
-                    minutesRemaining
-                )
-            } else if (minutesRemaining == 1) {
-                minutesRemainingStr = String.format(
-                    Locale.US, getString(R.string.minute_left),
-                    minutesRemaining
-                )
-            } else {
-                minutesRemainingStr = getString(R.string.less_than_minute)
-            }
-
-            mMinutesLeftTextView!!.text = minutesRemainingStr
-            mPagesLeftTextView!!.text = pagesRemainingStr
-        } catch (exp: java.lang.ArithmeticException) {
-            Log.e("divide error", exp.toString())
-        } catch (exp: IllegalStateException) {
-            Log.e("divide error", exp.toString())
-        }
-
-    }
-
-    private fun initAnimations() {
-        mFadeInAnimation = AnimationUtils.loadAnimation(activity, R.anim.fadein)
-        mFadeInAnimation!!.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-                mScrollSeekbar!!.visibility = View.VISIBLE
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                fadeOutSeekBarIfVisible()
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {
-
-            }
-        })
-        mFadeOutAnimation = AnimationUtils.loadAnimation(activity, R.anim.fadeout)
-        mFadeOutAnimation!!.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                mScrollSeekbar!!.visibility = View.INVISIBLE
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {
-
-            }
-        })
-    }
-
-    fun fadeOutSeekBarIfVisible() {
-        if (mScrollSeekbar!!.visibility == View.VISIBLE) {
-            mScrollSeekbar!!.startAnimation(mFadeOutAnimation)
-        }
-    }
-
     override fun onDestroyView() {
-        mFadeInAnimation!!.setAnimationListener(null)
-        mFadeOutAnimation!!.setAnimationListener(null)
         EventBus.getDefault().unregister(this)
         super.onDestroyView()
     }

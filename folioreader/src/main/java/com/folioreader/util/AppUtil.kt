@@ -81,12 +81,6 @@ class AppUtil {
             return charset
         }
 
-        @JvmStatic
-        fun formatDate(hightlightDate: Date): String {
-            val simpleDateFormat = SimpleDateFormat(Constants.DATE_FORMAT, Locale.getDefault())
-            return simpleDateFormat.format(hightlightDate)
-        }
-
         fun saveConfig(context: Context?, config: Config) {
             val obj = JSONObject()
             try {

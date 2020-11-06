@@ -249,7 +249,7 @@ class ConfigBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun configSeekBar() {
-        val thumbDrawable = ContextCompat.getDrawable(activity!!, R.drawable.seekbar_thumb)
+        val thumbDrawable = ContextCompat.getDrawable(activity!!, R.drawable.thumb)
         UiUtil.setColorIntToDrawable(config.themeColor, thumbDrawable)
         UiUtil.setColorResToDrawable(R.color.grey_color, view_config_font_size_seek_bar.progressDrawable)
         view_config_font_size_seek_bar.thumb = thumbDrawable

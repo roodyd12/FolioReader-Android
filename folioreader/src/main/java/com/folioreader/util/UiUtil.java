@@ -31,7 +31,6 @@ import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
 import com.folioreader.AppContext;
 import com.folioreader.R;
-import com.folioreader.ui.view.UnderlinedTextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -113,30 +112,6 @@ public class UiUtil {
             ((Activity) context)
                     .getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-    }
-
-    public static void setBackColorToTextView(UnderlinedTextView textView, String type) {
-        Context context = textView.getContext();
-        if (type.equals("highlight_yellow")) {
-            setUnderLineColor(textView, context, R.color.highlight_yellow, R.color.highlight_yellow);
-        } else if (type.equals("highlight_green")) {
-            setUnderLineColor(textView, context, R.color.highlight_green, R.color.highlight_green);
-        } else if (type.equals("highlight_blue")) {
-            setUnderLineColor(textView, context, R.color.highlight_blue, R.color.highlight_blue);
-        } else if (type.equals("highlight_pink")) {
-            setUnderLineColor(textView, context, R.color.highlight_pink, R.color.highlight_pink);
-        } else if (type.equals("highlight_underline")) {
-            setUnderLineColor(textView, context, android.R.color.transparent, android.R.color.holo_red_dark);
-            textView.setUnderlineWidth(2.0f);
-        }
-    }
-
-
-    private static void setUnderLineColor(UnderlinedTextView underlinedTextView, Context context, int background, int underlinecolor) {
-        underlinedTextView.setBackgroundColor(ContextCompat.getColor(context,
-                background));
-        underlinedTextView.setUnderLineColor(ContextCompat.getColor(context,
-                underlinecolor));
     }
 
     public static float convertDpToPixel(float dp, Context context) {
