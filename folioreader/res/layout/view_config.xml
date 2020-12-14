@@ -7,33 +7,6 @@
     android:layout_height="203dp"
     tools:layout_gravity="bottom">
 
-    <ImageButton
-        android:id="@+id/view_config_ib_day_mode"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_ib_night_mode"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/icon_sun_sel" />
-
-    <ImageButton
-        android:id="@+id/view_config_ib_night_mode"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/view_config_ib_day_mode"
-        app:srcCompat="@drawable/icon_moon_sel" />
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/grey_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_config_ib_night_mode" />
-
     <TextView
         android:id="@+id/view_config_font_andada"
         android:layout_width="0dp"
@@ -44,7 +17,7 @@
         android:fontFamily="@font/andada_regular"
         app:layout_constraintEnd_toStartOf="@+id/view_config_font_lato"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/view_config_font_lato"
@@ -56,7 +29,7 @@
         android:fontFamily="@font/lato_regular"
         app:layout_constraintEnd_toStartOf="@+id/view_config_font_lora"
         app:layout_constraintStart_toEndOf="@+id/view_config_font_andada"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/view_config_font_lora"
@@ -68,7 +41,7 @@
         android:fontFamily="@font/lora_regular"
         app:layout_constraintEnd_toStartOf="@+id/view_config_font_raleway"
         app:layout_constraintStart_toEndOf="@+id/view_config_font_lato"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/view_config_font_raleway"
@@ -80,7 +53,7 @@
         android:fontFamily="@font/raleway_regular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/view_config_font_lora"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view4"

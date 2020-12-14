@@ -115,10 +115,6 @@ public final class HtmlUtil {
                 break;
         }
 
-        if (config.isNightMode()) {
-            classes += " nightMode";
-        }
-
         switch (config.getFontSize()) {
             case 0:
                 classes += " textSizeOne";

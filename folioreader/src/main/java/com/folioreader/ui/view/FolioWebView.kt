@@ -296,11 +296,6 @@ class FolioWebView : WebView {
         if (mScrollListener != null) mScrollListener!!.onScrollChange(t)
         super.onScrollChanged(l, t, oldl, oldt)
 
-        if (lastScrollType == LastScrollType.USER) {
-            //Log.d(LOG_TAG, "-> onScrollChanged -> scroll initiated by user");
-            parentFragment.searchLocatorVisible = null
-        }
-
         lastScrollType = null
     }
 

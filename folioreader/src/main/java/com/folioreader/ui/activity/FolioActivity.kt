@@ -47,9 +47,7 @@ import com.folioreader.FolioReader
 import com.folioreader.R
 import com.folioreader.model.DisplayUnit
 import com.folioreader.model.locators.ReadLocator
-import com.folioreader.model.locators.SearchLocator
 import com.folioreader.ui.adapter.FolioPageFragmentAdapter
-import com.folioreader.ui.adapter.SearchAdapter
 import com.folioreader.ui.fragment.FolioPageFragment
 import com.folioreader.ui.view.ConfigBottomSheetDialogFragment
 import com.folioreader.ui.view.DirectionalViewpager
@@ -95,11 +93,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
     private var direction: Config.Direction = Config.Direction.VERTICAL
     private var portNumber: Int = Constants.DEFAULT_PORT_NUMBER
     private var streamerUri: Uri? = null
-
-    private var searchUri: Uri? = null
-    private var searchAdapterDataBundle: Bundle? = null
-    private var searchQuery: CharSequence? = null
-    private var searchLocator: SearchLocator? = null
 
     private var displayMetrics: DisplayMetrics? = null
     private var density: Float = 0.toFloat()
@@ -153,17 +146,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
             return result
         }
 
-    private val searchReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            Log.v(LOG_TAG, "-> searchReceiver -> onReceive -> " + intent.action!!)
-
-            val action = intent.action ?: return
-            when (action) {
-                ACTION_SEARCH_CLEAR -> clearSearchLocator()
-            }
-        }
-    }
-
     private val currentFragment: FolioPageFragment?
         get() = if (mFolioPageFragmentAdapter != null && mFolioPageViewPager != null) {
             mFolioPageFragmentAdapter!!
@@ -180,7 +162,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
 
     private enum class RequestCode private constructor(internal val value: Int) {
         CONTENT_HIGHLIGHT(77),
-        SEARCH(101)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -256,11 +237,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         setContentView(R.layout.folio_activity)
         this.savedInstanceState = savedInstanceState
 
-        if (savedInstanceState != null) {
-            searchAdapterDataBundle = savedInstanceState.getBundle(SearchAdapter.DATA_BUNDLE)
-            searchQuery = savedInstanceState.getCharSequence(SearchActivity.BUNDLE_SAVE_SEARCH_QUERY)
-        }
-
         mBookId = intent.getStringExtra(FolioReader.EXTRA_BOOK_ID)
         mEpubSourceType = intent.extras!!.getSerializable(FolioActivity.INTENT_EPUB_SOURCE_TYPE) as EpubSourceType
         if (mEpubSourceType == EpubSourceType.RAW) {
@@ -283,23 +259,13 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
 
         val config = AppUtil.getSavedConfig(applicationContext)!!
 
-//        toolbar!!.navigationIcon = drawable
-
-        if (config.isNightMode) {
-            setNightMode()
-        } else {
-            setDayMode()
-        }
+        setDayMode()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val color: Int
-            if (config.isNightMode) {
-                color = ContextCompat.getColor(this, R.color.black)
-            } else {
-                val attrs = intArrayOf(android.R.attr.navigationBarColor)
-                val typedArray = theme.obtainStyledAttributes(attrs)
-                color = typedArray.getColor(0, ContextCompat.getColor(this, R.color.white))
-            }
+            val attrs = intArrayOf(android.R.attr.navigationBarColor)
+            val typedArray = theme.obtainStyledAttributes(attrs)
+            color = typedArray.getColor(0, ContextCompat.getColor(this, R.color.white))
             window.navigationBarColor = color
         }
 
@@ -309,7 +275,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         }
     }
 
-    override fun setDayMode() {
+    fun setDayMode() {
         Log.v(LOG_TAG, "-> setDayMode")
 
         actionBar!!.setBackgroundDrawable(
@@ -318,20 +284,10 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
     }
 
-    override fun setNightMode() {
-        Log.v(LOG_TAG, "-> setNightMode")
-
-        actionBar!!.setBackgroundDrawable(
-            ColorDrawable(ContextCompat.getColor(this, R.color.black))
-        )
-        toolbar!!.setTitleTextColor(ContextCompat.getColor(this, R.color.night_title_text_color))
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val config = AppUtil.getSavedConfig(applicationContext)!!
-        UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemSearch).icon)
         UiUtil.setColorIntToDrawable(config.themeColor, menu.findItem(R.id.itemConfig).icon)
 
         return true
@@ -342,19 +298,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
 
         val itemId = item.itemId
 
-        if (itemId == R.id.itemSearch) {
-            Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
-            if (searchUri == null)
-                return true
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.putExtra(SearchActivity.BUNDLE_SPINE_SIZE, spine?.size ?: 0)
-            intent.putExtra(SearchActivity.BUNDLE_SEARCH_URI, searchUri)
-            intent.putExtra(SearchAdapter.DATA_BUNDLE, searchAdapterDataBundle)
-            intent.putExtra(SearchActivity.BUNDLE_SAVE_SEARCH_QUERY, searchQuery)
-            startActivityForResult(intent, RequestCode.SEARCH.value)
-            return true
-
-        } else if (itemId == R.id.itemConfig) {
+        if (itemId == R.id.itemConfig) {
             Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.title)
             showConfigBottomSheetDialogFragment()
             return true
@@ -425,8 +369,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         )
 
         r2StreamerServer!!.start()
-
-        FolioReader.initRetrofit(streamerUrl)
     }
 
     private fun onBookInitFailure() {
@@ -451,17 +393,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
             }
         }
 
-        // searchUri currently not in use as it's uri is constructed through Retrofit,
-        // code kept just in case if required in future.
-        for (link in publication.links) {
-            if (link.rel.contains("search")) {
-                searchUri = Uri.parse("http://" + link.href!!)
-                break
-            }
-        }
-        if (searchUri == null)
-            searchUri = Uri.parse(streamerUrl + "search")
-
         configFolio()
     }
 
@@ -478,7 +409,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
 
         var folioPageFragment: FolioPageFragment? = currentFragment ?: return
         entryReadLocator = folioPageFragment!!.getLastReadLocator()
-        val searchLocatorVisible = folioPageFragment.searchLocatorVisible
 
         direction = newDirection
 
@@ -491,9 +421,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         mFolioPageViewPager!!.currentItem = currentChapterIndex
 
         folioPageFragment = currentFragment ?: return
-        searchLocatorVisible?.let {
-            folioPageFragment.highlightSearchLocator(searchLocatorVisible)
-        }
     }
 
     private fun initDistractionFreeMode(savedInstanceState: Bundle?) {
@@ -716,29 +643,7 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode == RequestCode.SEARCH.value) {
-            Log.v(LOG_TAG, "-> onActivityResult -> " + RequestCode.SEARCH)
-
-            if (resultCode == Activity.RESULT_CANCELED)
-                return
-
-            searchAdapterDataBundle = data!!.getBundleExtra(SearchAdapter.DATA_BUNDLE)
-            searchQuery = data.getCharSequenceExtra(SearchActivity.BUNDLE_SAVE_SEARCH_QUERY)
-
-            if (resultCode == SearchActivity.ResultCode.ITEM_SELECTED.value) {
-
-                searchLocator = data.getParcelableExtra(EXTRA_SEARCH_ITEM)
-                // In case if SearchActivity is recreated due to screen rotation then FolioActivity
-                // will also be recreated, so mFolioPageViewPager might be null.
-                if (mFolioPageViewPager == null) return
-                currentChapterIndex = getChapterIndex(Constants.HREF, searchLocator!!.href)
-                mFolioPageViewPager!!.currentItem = currentChapterIndex
-                val folioPageFragment = currentFragment ?: return
-                folioPageFragment.highlightSearchLocator(searchLocator!!)
-                searchLocator = null
-            }
-
-        } else if (requestCode == RequestCode.CONTENT_HIGHLIGHT.value && resultCode == Activity.RESULT_OK &&
+        if (requestCode == RequestCode.CONTENT_HIGHLIGHT.value && resultCode == Activity.RESULT_OK &&
             data!!.hasExtra(TYPE)
         ) {
 
@@ -758,7 +663,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
             outState!!.putSerializable(BUNDLE_READ_LOCATOR_CONFIG_CHANGE, lastReadLocator)
 
         val localBroadcastManager = LocalBroadcastManager.getInstance(this)
-        localBroadcastManager.unregisterReceiver(searchReceiver)
         localBroadcastManager.unregisterReceiver(closeBroadcastReceiver)
 
         if (r2StreamerServer != null)
@@ -821,34 +725,16 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         )
         mFolioPageViewPager!!.adapter = mFolioPageFragmentAdapter
 
-        // In case if SearchActivity is recreated due to screen rotation then FolioActivity
-        // will also be recreated, so searchLocator is checked here.
-        if (searchLocator != null) {
-
-            currentChapterIndex = getChapterIndex(Constants.HREF, searchLocator!!.href)
-            mFolioPageViewPager!!.currentItem = currentChapterIndex
-            val folioPageFragment = currentFragment ?: return
-            folioPageFragment.highlightSearchLocator(searchLocator!!)
-            searchLocator = null
-
+        val readLocator: ReadLocator?
+        if (savedInstanceState == null) {
+            readLocator = intent.getParcelableExtra(FolioActivity.EXTRA_READ_LOCATOR)
+            entryReadLocator = readLocator
         } else {
-
-            val readLocator: ReadLocator?
-            if (savedInstanceState == null) {
-                readLocator = intent.getParcelableExtra(FolioActivity.EXTRA_READ_LOCATOR)
-                entryReadLocator = readLocator
-            } else {
-                readLocator = savedInstanceState!!.getParcelable(BUNDLE_READ_LOCATOR_CONFIG_CHANGE)
-                lastReadLocator = readLocator
-            }
-            currentChapterIndex = getChapterIndex(readLocator)
-            mFolioPageViewPager!!.currentItem = currentChapterIndex
+            readLocator = savedInstanceState!!.getParcelable(BUNDLE_READ_LOCATOR_CONFIG_CHANGE)
+            lastReadLocator = readLocator
         }
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            searchReceiver,
-            IntentFilter(ACTION_SEARCH_CLEAR)
-        )
+        currentChapterIndex = getChapterIndex(readLocator)
+        mFolioPageViewPager!!.currentItem = currentChapterIndex
     }
 
     private fun getChapterIndex(readLocator: ReadLocator?): Int {
@@ -886,8 +772,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         this.outState = outState
 
         outState.putBoolean(BUNDLE_DISTRACTION_FREE_MODE, distractionFreeMode)
-        outState.putBundle(SearchAdapter.DATA_BUNDLE, searchAdapterDataBundle)
-        outState.putCharSequence(SearchActivity.BUNDLE_SAVE_SEARCH_QUERY, searchQuery)
     }
 
     override fun storeLastReadLocator(lastReadLocator: ReadLocator) {
@@ -932,24 +816,5 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
 
     override fun getDirection(): Config.Direction {
         return direction
-    }
-
-    private fun clearSearchLocator() {
-        Log.v(LOG_TAG, "-> clearSearchLocator")
-
-        val fragments = mFolioPageFragmentAdapter!!.fragments
-        for (i in fragments.indices) {
-            val folioPageFragment = fragments[i] as FolioPageFragment?
-            folioPageFragment?.clearSearchLocator()
-        }
-
-        val savedStateList = mFolioPageFragmentAdapter!!.savedStateList
-        if (savedStateList != null) {
-            for (i in savedStateList.indices) {
-                val savedState = savedStateList[i]
-                val bundle = FolioPageFragmentAdapter.getBundleFromSavedState(savedState)
-                bundle?.putParcelable(FolioPageFragment.BUNDLE_SEARCH_LOCATOR, null)
-            }
-        }
     }
 }

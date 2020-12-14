@@ -5,13 +5,6 @@
     tools:context="com.folioreader.ui.activity.FolioActivity">
 
     <item
-        android:id="@+id/itemSearch"
-        android:icon="@drawable/ic_search"
-        android:title="@string/menu_item_search"
-        app:showAsAction="ifRoom"
-        tools:showAsAction="always" />
-
-    <item
         android:id="@+id/itemConfig"
         android:icon="@drawable/icon_font"
         android:title="@string/menu_item_config"

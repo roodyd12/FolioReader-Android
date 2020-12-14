@@ -23,10 +23,6 @@ public interface FolioActivityCallback {
 
     void toggleSystemUI();
 
-    void setDayMode();
-
-    void setNightMode();
-
     int getTopDistraction(final DisplayUnit unit);
 
     int getBottomDistraction(final DisplayUnit unit);

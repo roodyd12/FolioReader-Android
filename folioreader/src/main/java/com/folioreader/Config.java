@@ -20,9 +20,7 @@ public class Config implements Parcelable {
     public static final String EXTRA_OVERRIDE_CONFIG = "com.folioreader.extra.OVERRIDE_CONFIG";
     public static final String CONFIG_FONT = "font";
     public static final String CONFIG_FONT_SIZE = "font_size";
-    public static final String CONFIG_IS_NIGHT_MODE = "is_night_mode";
     public static final String CONFIG_THEME_COLOR_INT = "theme_color_int";
-    public static final String CONFIG_IS_TTS = "is_tts";
     public static final String CONFIG_ALLOWED_DIRECTION = "allowed_direction";
     public static final String CONFIG_DIRECTION = "direction";
     private static final AllowedDirection DEFAULT_ALLOWED_DIRECTION = AllowedDirection.ONLY_VERTICAL;
@@ -32,10 +30,8 @@ public class Config implements Parcelable {
 
     private int font = 3;
     private int fontSize = 2;
-    private boolean nightMode;
     @ColorInt
     private int themeColor = DEFAULT_THEME_COLOR_INT;
-    private boolean showTts = true;
     private AllowedDirection allowedDirection = DEFAULT_ALLOWED_DIRECTION;
     private Direction direction = DEFAULT_DIRECTION;
 
@@ -74,9 +70,7 @@ public class Config implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(font);
         dest.writeInt(fontSize);
-        dest.writeByte((byte) (nightMode ? 1 : 0));
         dest.writeInt(themeColor);
-        dest.writeByte((byte) (showTts ? 1 : 0));
         dest.writeString(allowedDirection.toString());
         dest.writeString(direction.toString());
     }
@@ -84,9 +78,7 @@ public class Config implements Parcelable {
     protected Config(Parcel in) {
         font = in.readInt();
         fontSize = in.readInt();
-        nightMode = in.readByte() != 0;
         themeColor = in.readInt();
-        showTts = in.readByte() != 0;
         allowedDirection = getAllowedDirectionFromString(LOG_TAG, in.readString());
         direction = getDirectionFromString(LOG_TAG, in.readString());
     }
@@ -97,9 +89,7 @@ public class Config implements Parcelable {
     public Config(JSONObject jsonObject) {
         font = jsonObject.optInt(CONFIG_FONT);
         fontSize = jsonObject.optInt(CONFIG_FONT_SIZE);
-        nightMode = jsonObject.optBoolean(CONFIG_IS_NIGHT_MODE);
         themeColor = getValidColorInt(jsonObject.optInt(CONFIG_THEME_COLOR_INT));
-        showTts = jsonObject.optBoolean(CONFIG_IS_TTS);
         allowedDirection = getAllowedDirectionFromString(LOG_TAG,
                 jsonObject.optString(CONFIG_ALLOWED_DIRECTION));
         direction = getDirectionFromString(LOG_TAG, jsonObject.optString(CONFIG_DIRECTION));
@@ -155,15 +145,6 @@ public class Config implements Parcelable {
         return this;
     }
 
-    public boolean isNightMode() {
-        return nightMode;
-    }
-
-    public Config setNightMode(boolean nightMode) {
-        this.nightMode = nightMode;
-        return this;
-    }
-
     @ColorInt
     private int getValidColorInt(@ColorInt int colorInt) {
         if (colorInt >= 0) {
@@ -193,15 +174,6 @@ public class Config implements Parcelable {
 
     public Config setThemeColorInt(@ColorInt int colorInt) {
         this.themeColor = getValidColorInt(colorInt);
-        return this;
-    }
-
-    public boolean isShowTts() {
-        return showTts;
-    }
-
-    public Config setShowTts(boolean showTts) {
-        this.showTts = showTts;
         return this;
     }
 
@@ -285,9 +257,7 @@ public class Config implements Parcelable {
         return "Config{" +
                 "font=" + font +
                 ", fontSize=" + fontSize +
-                ", nightMode=" + nightMode +
                 ", themeColor=" + themeColor +
-                ", showTts=" + showTts +
                 ", allowedDirection=" + allowedDirection +
                 ", direction=" + direction +
                 '}';
