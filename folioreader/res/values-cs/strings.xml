@@ -5,16 +5,6 @@
     <string name="direction_horizontal">Horizontální</string>
     <string name="direction_vertical">Vertikální</string>
 
-    <string name="menu_item_search">Vyhledávání</string>
     <string name="menu_item_config">Nastavení</string>
-
-    <string name="search_hint">Vyhledávání v knize</string>
-    <string name="search_empty_text">Žádné výsledky.</string>
-    <string name="search_failure_text">Něco se pokazilo.</string>
-
-    <plurals name="numberOfSearchResults">
-        <item quantity="one">%d výskyt</item>
-        <item quantity="other">%d výskytů</item>
-    </plurals>
 
 </resources>
