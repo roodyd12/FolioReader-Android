@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.folioreader.model.locators.ReadLocator;
 import com.folioreader.network.QualifiedTypeConverterFactory;
-import com.folioreader.network.R2StreamerApi;
 import com.folioreader.ui.activity.FolioActivity;
 import com.folioreader.util.ReadLocatorListener;
 import okhttp3.OkHttpClient;
@@ -42,8 +41,6 @@ public class FolioReader {
 
     @Nullable
     public Retrofit retrofit;
-    @Nullable
-    public R2StreamerApi r2StreamerApi;
 
     public interface OnClosedListener {
         /**
@@ -191,8 +188,6 @@ public class FolioReader {
                         GsonConverterFactory.create()))
                 .client(client)
                 .build();
-
-        singleton.r2StreamerApi = singleton.retrofit.create(R2StreamerApi.class);
     }
 
     public FolioReader setReadLocatorListener(ReadLocatorListener readLocatorListener) {

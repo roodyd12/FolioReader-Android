@@ -671,7 +671,6 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback,
         if (isFinishing) {
             localBroadcastManager.sendBroadcast(Intent(FolioReader.ACTION_FOLIOREADER_CLOSED))
             FolioReader.get().retrofit = null
-            FolioReader.get().r2StreamerApi = null
         }
     }
 

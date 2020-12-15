@@ -82,12 +82,11 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
-    implementation "androidx.recyclerview:recyclerview:$versions.recyclerview"
+    implementation "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
     implementation "com.google.android.material:material:$versions.material"
     testImplementation 'junit:junit:4.12'
 
     implementation 'org.slf4j:slf4j-android:1.7.25'
-    implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
 
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
@@ -113,10 +112,5 @@ dependencies {
         changing = true
     }
 
-    // Only ReflectionUtils in Spring framework is used
-    implementation 'org.springframework:spring-core:4.3.19.RELEASE'
-
-    // Lifecycle
-    implementation "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
 }
 apply from: '../folioreader/bintray/bintrayv1.gradle'

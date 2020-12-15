@@ -10,9 +10,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.webkit.ConsoleMessage
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
+import android.webkit.*
 import android.widget.PopupWindow
 import androidx.core.view.GestureDetectorCompat
 import com.folioreader.Config
@@ -211,6 +209,15 @@ class FolioWebView : WebView {
             GestureDetectorCompat(context, HorizontalGestureListener())
         } else {
             GestureDetectorCompat(context, VerticalGestureListener())
+        }
+
+        webViewClient = object : WebViewClient() {
+            override fun shouldInterceptRequest(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): WebResourceResponse? {
+                return super.shouldInterceptRequest(view, request)
+            }
         }
     }
 
