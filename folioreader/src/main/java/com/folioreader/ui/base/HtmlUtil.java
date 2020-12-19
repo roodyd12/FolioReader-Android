@@ -30,18 +30,6 @@ public final class HtmlUtil {
                 "file:///android_asset/js/jquery-3.4.1.min.js") + "\n";
 
         jsPath = jsPath + String.format(context.getString(R.string.script_tag),
-                "file:///android_asset/js/rangy-core.js") + "\n";
-
-        jsPath = jsPath + String.format(context.getString(R.string.script_tag),
-                "file:///android_asset/js/rangy-highlighter.js") + "\n";
-
-        jsPath = jsPath + String.format(context.getString(R.string.script_tag),
-                "file:///android_asset/js/rangy-classapplier.js") + "\n";
-
-        jsPath = jsPath + String.format(context.getString(R.string.script_tag),
-                "file:///android_asset/js/rangy-serializer.js") + "\n";
-
-        jsPath = jsPath + String.format(context.getString(R.string.script_tag),
                 "file:///android_asset/js/Bridge.js") + "\n";
 
         jsPath = jsPath + String.format(context.getString(R.string.script_tag),
