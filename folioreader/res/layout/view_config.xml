@@ -4,65 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="203dp"
+    android:layout_height="wrap_content"
     tools:layout_gravity="bottom">
-
-    <TextView
-        android:id="@+id/view_config_font_andada"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/andada"
-        android:textSize="17sp"
-        android:fontFamily="@font/andada_regular"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_font_lato"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/view_config_font_lato"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/lato"
-        android:textSize="17sp"
-        android:fontFamily="@font/lato_regular"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_font_lora"
-        app:layout_constraintStart_toEndOf="@+id/view_config_font_andada"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/view_config_font_lora"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/lora"
-        android:textSize="17sp"
-        android:fontFamily="@font/lora_regular"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_font_raleway"
-        app:layout_constraintStart_toEndOf="@+id/view_config_font_lato"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/view_config_font_raleway"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/raleway"
-        android:textSize="17sp"
-        android:fontFamily="@font/raleway_regular"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/view_config_font_lora"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/view4"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/grey_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_config_font_lato" />
 
     <ImageView
         android:id="@+id/view_config_iv_label_font_small"
@@ -72,10 +15,10 @@
         android:adjustViewBounds="false"
         android:scaleType="fitCenter"
         android:tint="@color/grey_color"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/view_config_font_size_seek_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view4"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_font" />
 
     <ImageView
@@ -86,10 +29,10 @@
         android:cropToPadding="false"
         android:scaleType="fitCenter"
         android:tint="@color/grey_color"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/view_config_font_size_seek_bar"
-        app:layout_constraintTop_toBottomOf="@+id/view4"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_font" />
 
     <SeekBar
@@ -97,45 +40,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:max="4"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/view_config_iv_label_font_big"
         app:layout_constraintStart_toEndOf="@+id/view_config_iv_label_font_small"
-        app:layout_constraintTop_toBottomOf="@+id/view4" />
-
-    <View
-        android:id="@+id/view5"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/grey_color"
-        app:layout_constraintBottom_toTopOf="@+id/buttonVertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_config_iv_label_font_small" />
-
-    <TextView
-        android:id="@+id/buttonVertical"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/direction_vertical"
-        android:textSize="17sp"
-        android:fontFamily="@font/lato_regular"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonHorizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view5" />
-
-    <TextView
-        android:id="@+id/buttonHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/direction_horizontal"
-        android:textSize="17sp"
-        android:fontFamily="@font/lato_regular"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonVertical"
-        app:layout_constraintTop_toBottomOf="@+id/view5" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

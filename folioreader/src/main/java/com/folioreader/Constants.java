@@ -9,10 +9,6 @@ public class Constants {
     public static final int DEFAULT_PORT_NUMBER = 8080;
     public static final String STREAMER_URL_TEMPLATE = "%s:%d/%s/";
 
-    public static final int FONT_ANDADA = 1;
-    public static final int FONT_LATO = 2;
-    public static final int FONT_LORA = 3;
-    public static final int FONT_RALEWAY = 4;
     public static final String ASSET = "file:///android_asset/";
     public static final String HREF = "href";
 }

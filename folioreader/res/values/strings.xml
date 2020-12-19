@@ -2,11 +2,6 @@
 
     <string name="app_name">FolioReader</string>
 
-    <string name="andada">Andada</string>
-    <string name="lato">Lato</string>
-    <string name="lora">Lora</string>
-    <string name="raleway">Raleway</string>
-
     <string name="send_to">Send to</string>
 
     <string name="go_to_anchor" translatable="false">javascript:goToAnchor(\'%s\')</string>
